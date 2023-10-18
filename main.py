@@ -293,34 +293,24 @@ class UserInterface:
             table.add_row(con.row)
         print(table)
 
-    def search_contact(self, value_to_search):
-        search_term = value_to_search.strip().lower()
-        results = []
+    def search_contact_by_name_or_phone(self):
+        value_to_search = input("Enter the name or phone number to search for: ")
+        self.search_contact(value_to_search, by_notes=False)
 
-        for contact in self.people:
-            if search_term in contact.name.lower() or (contact.phone_number and search_term in contact.phone_number):
-                results.append(contact)
-
-        if results:
-            table = PrettyTable()
-            table.field_names = [attr.upper() for attr in self._attributes]
-            for contact in results:
-                table.add_row(contact.row)
-            print("\nSearch results:")
-            print(table)
-        else:
-            print(f"No contacts found for '{search_term}'.")
 
     def search_contact_by_notes(self):
         value_to_search = input("Enter the notes to search for: ")
         self.search_contact(value_to_search, by_notes=True)
 
+    
     def search_contact(self, value_to_search, by_notes=False):
         search_term = value_to_search.strip().lower()
         results = []
 
         for contact in self.people:
             if by_notes and contact.notes.value and search_term in contact.notes.value.lower():
+                results.append(contact)
+            elif not by_notes and (search_term in contact.name.lower() or (contact.phone_number and search_term in contact.phone_number)):
                 results.append(contact)
 
         if results:
@@ -337,7 +327,9 @@ class UserInterface:
             if by_notes:
                 print(f"No contacts found with notes containing '{search_term}'.")
             else:
-                print(f"No contacts found for '{search_term}'.")
+                print(f"No contacts found for '{value_to_search}'.")
+
+
 
     def menu(self):
         while True:
