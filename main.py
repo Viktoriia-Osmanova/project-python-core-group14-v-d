@@ -148,21 +148,28 @@ class UserInterface:
         return f"You have entered invalid {self._attributes[self._attributes.index(attribute)]}. Please recheck and try again. "
 
     def create(self):
+        
         name = self.validator.valid_input(
-            self.validator.valid_as_name, self._message('name'),  self._message('name', 0))
+            self.validator.valid_as_name, self._message('name'),  self._message('name', 0)).title()
+        
         phone_number = self.validator.valid_input(self.validator.valid_as_phone_number, self._message(
             'phone number'), self._message('phone number', 0))
+        
         email = self.validator.valid_input(self.validator.valid_as_email, self._message(
             'email address'), self._message('email address', 0))
+        
         address = self.validator.valid_input(self.validator.valid_as_address, self._message(
             'address'), self._message('address', 0))
+        
         birthday = self.validator.valid_input(self.validator.valid_as_birthday, self._message(
             'birthday date'), self._message('birthday date', 0)).title()
-        notes = Notes(input(self._message('notes')))
+        
+        notes_text = input(self._message('notes'))
+        notes = Notes('. '.join(s.capitalize() for s in notes_text.split('. ')))
 
         new_person = Person(name, address, phone_number,
                             email, birthday, notes)
-
+        
         self.people.append(new_person)
 
     def edit_attribute_menu(self, contact):
@@ -178,7 +185,7 @@ class UserInterface:
         attribute = input(text)
         if attribute == "1":
             contact.name = self.validator.valid_input(
-                self.validator.valid_as_name, self._message('name'),  self._message('name', 0))
+                self.validator.valid_as_name, self._message('name'),  self._message('name', 0)).title()
         elif attribute == "2":
             contact.phone_number = self.validator.valid_input(
                 self.validator.valid_as_phone_number, self._message('phone number'), self._message('phone number', 0))
@@ -190,7 +197,7 @@ class UserInterface:
                 self.validator.valid_as_address, self._message('address'), self._message('address', 0))
         elif attribute == "5":
             contact.birthday = self.validator.valid_input(self.validator.valid_as_birthday, self._message(
-                'birthday date'), self._message('birthday date', 0))
+                'birthday date'), self._message('birthday date', 0)).title()
         elif attribute == "6":
             edit_delete_note_input = input(
                 '\n1. Edit note.\n2. Delete note.\nYour choice: ').strip()
@@ -211,9 +218,9 @@ class UserInterface:
                 return 1
             else:
                 table = PrettyTable()
-                table.field_names = ["№", "Name"]
+                table.field_names = ["№", "Name", "phone number"]
                 for index, con in enumerate(found):
-                    table.add_row((index, con.name))
+                    table.add_row((index, con.name, con.phone_number))
                 print(table)
                 number = input("Choose number contact to change: ")
                 if number.isdigit() and int(number) < len(found):
@@ -334,16 +341,16 @@ class UserInterface:
     def menu(self):
         while True:
             menu_text = """Hello, it's your Personal Assistant! I can help you organize your contacts.\n
-            Menu:
-            1. Create a new contact
-            2. Edit contact
-            3. Find by coming birthday
-            4. Display contacts
-            5. Delete contact
-            6. Search contacts by name or phone number
-            7. Search contacts by notes
-            0. Exit
-            Choose a number: """
+    Menu:
+    1. Create a new contact
+    2. Edit contact
+    3. Find by coming birthday
+    4. Display contacts
+    5. Delete contact
+    6. Search contacts by name or phone number
+    7. Search contacts by notes
+    0. Exit
+    Choose a number: """
             ans = input(menu_text)
             if ans == "1":
                 self.create()
